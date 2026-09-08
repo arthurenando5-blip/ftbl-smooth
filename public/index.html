@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FTBL Smooth - Editor Profissional</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- TELA INICIAL -->
+  <div id="initialScreen" class="screen">
+    <div class="container-center">
+      <div class="logo-container">
+        <h1 class="logo">FTBL SMOOTH</h1>
+        <p class="subtitle">Reverse smooth Edited in mobile smooth reverse 100% seguro</p>
+        <p class="creator">Creator: neyftbl</p>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="showPaymentModal()">Pagar R$ 7,00</button>
+        <button class="btn btn-secondary" onclick="window.open('https://tiktok.com/@arthur.cc3', '_blank')">Ir para TikTok</button>
+        <button class="btn btn-login" onclick="showLoginScreen()">ENTRAR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA DE LOGIN -->
+  <div id="loginScreen" class="screen hidden">
+    <div class="container-center">
+      <h2>Olá, Neyftbl 👋</h2>
+      <p>Bote a key para entrar</p>
+
+      <input type="text" id="keyInput" placeholder="Digite sua key" class="input-field">
+      <button class="btn btn-primary" onclick="verifyKey()">Verificar key</button>
+      <button class="btn btn-back" onclick="showInitialScreen()">Voltar</button>
+    </div>
+  </div>
+
+  <!-- TELA DE VERIFICAÇÃO -->
+  <div id="verifyScreen" class="screen hidden">
+    <div class="container-center">
+      <div class="loader"></div>
+      <p>Verificando key...</p>
+    </div>
+  </div>
+
+  <!-- EDITOR -->
+  <div id="editorScreen" class="screen hidden">
+    <div class="editor-container">
+      <!-- Header -->
+      <div class="editor-header">
+        <h1>FTBL Smooth Editor</h1>
+        <div class="header-actions">
+          <button class="btn-small" onclick="showOwnerPanel()">🕵️ Painel</button>
+          <button class="btn-small" onclick="showInitialScreen()">Sair</button>
+        </div>
+      </div>
+
+      <!-- Setor de Seleção de Clip -->
+      <div class="editor-section">
+        <h3>Selecione o clip para o seu reverse</h3>
+        <input type="file" id="videoInput" accept="video/*" class="file-input">
+        <button class="btn btn-primary" onclick="selectVideo()">Selecionar clip 📁</button>
+        <p id="videoStatus"></p>
+      </div>
+
+      <!-- Preview -->
+      <div class="editor-section">
+        <video id="videoPreview" class="video-preview" controls></video>
+      </div>
+
+      <!-- Opções de Edição -->
+      <div class="editor-section">
+        <h3>Opções de Edição</h3>
+        <div class="options-grid">
+          <div class="option-card" onclick="toggleOption(this, 'reverse')">
+            <h4>Reverse</h4>
+            <p>Inverter sequência</p>
+          </div>
+          <div class="option-card" onclick="toggleOption(this, 'motionBlur')">
+            <h4>Motion Blur</h4>
+            <p>Borrão de movimento</p>
+          </div>
+          <div class="option-card" onclick="toggleOption(this, 'ccDark')">
+            <h4>CC Dark AE</h4>
+            <p>Estilo cinematográfico</p>
+          </div>
+          <div class="option-card" onclick="toggleOption(this, 'zoom')">
+            <h4>Zoom</h4>
+            <p>Efeito de zoom</p>
+          </div>
+          <div class="option-card" onclick="toggleOption(this, 'slowMotion')">
+            <h4>Slow Motion</h4>
+            <p>Câmera lenta</p>
+          </div>
+          <div class="option-card" onclick="toggleOption(this, 'upscale4k')">
+            <h4>4K UHD</h4>
+            <p>Upscale 4K</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controles Avançados -->
+      <div class="editor-section" id="advancedControls" style="display:none;">
+        <h3>Controles Avançados</h3>
+        <div class="control-group">
+          <label>Intensidade do Blur: <span id="blurValue">1.0</span></label>
+          <input type="range" id="blurSlider" min="0.1" max="3" step="0.1" value="1.0" oninput="updateBlur(this.value)">
+        </div>
+        <div class="control-group">
+          <label>Zoom Level: <span id="zoomValue">1.0</span></label>
+          <input type="range" id="zoomSlider" min="1" max="3" step="0.1" value="1.0" oninput="updateZoom(this.value)">
+        </div>
+        <div class="control-group">
+          <label>Slow Motion: <span id="slowValue">1.0</span></label>
+          <input type="range" id="slowSlider" min="0.5" max="2" step="0.1" value="1.0" oninput="updateSlow(this.value)">
+        </div>
+      </div>
+
+      <!-- Botão Gerar -->
+      <div class="editor-section">
+        <button class="btn btn-large" onclick="generateVideo()">Gerar Reverse</button>
+        <button class="btn btn-feedback" onclick="showFeedbackModal()">De um feedback 🔥</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROCESSAMENTO -->
+  <div id="processingScreen" class="screen hidden">
+    <div class="container-center">
+      <div class="loader"></div>
+      <h2>Estamos gerando seu reverse</h2>
+      <p id="processingPercent">Processando 0%</p>
+    </div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div id="resultScreen" class="screen hidden">
+    <div class="container-center result-container">
+      <div class="result-circle">✓</div>
+      <h2 id="resultMessage">Geramos seu reverse🔥</h2>
+      <button class="btn btn-primary" onclick="downloadVideo()">Abaixar clip 4K UHD</button>
+      <button class="btn btn-secondary" onclick="showEditorScreen()">↻ Novo reverse</button>
+      
+      <!-- Avaliação -->
+      <div class="rating-section">
+        <h3>Avalie o app🔥</h3>
+        <div class="stars">
+          <span class="star" onclick="rateApp(1)">⭐</span>
+          <span class="star" onclick="rateApp(2)">⭐</span>
+          <span class="star" onclick="rateApp(3)">⭐</span>
+          <span class="star" onclick="rateApp(4)">⭐</span>
+          <span class="star" onclick="rateApp(5)">⭐</span>
+        </div>
+        <textarea id="ratingComment" placeholder="Deixe um comentário (opcional)" class="input-field"></textarea>
+        <button class="btn btn-primary" onclick="submitRating()">Enviar Avaliação</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAINEL DO DONO -->
+  <div id="ownerPanel" class="screen hidden">
+    <div class="owner-container">
+      <div class="owner-header">
+        <h1>🕵️ PAINEL DO DONO</h1>
+        <p>FTBL SMOOTH CONTROL CENTER</p>
+        <button class="btn-close" onclick="closeOwnerPanel()">✕</button>
+      </div>
+
+      <div class="owner-tabs">
+        <button class="tab-btn active" onclick="switchTab('users')">Usuários</button>
+        <button class="tab-btn" onclick="switchTab('access')">Liberar Acesso</button>
+        <button class="tab-btn" onclick="switchTab('reports')">Denúncias</button>
+        <button class="tab-btn" onclick="switchTab('config')">Configurações</button>
+      </div>
+
+      <!-- Aba de Usuários -->
+      <div id="usersTab" class="owner-tab active">
+        <h2>Usuários</h2>
+        <div id="usersList" class="users-list"></div>
+      </div>
+
+      <!-- Aba de Liberar Acesso -->
+      <div id="accessTab" class="owner-tab">
+        <h2>Liberar para...</h2>
+        <input type="text" id="tikTokInput" placeholder="@usuario" class="input-field">
+        <select id="daysSelect" class="input-field">
+          <option value="1">1 Dia</option>
+          <option value="7">7 Dias</option>
+          <option value="30" selected>30 Dias</option>
+          <option value="custom">Personalizado</option>
+        </select>
+        <button class="btn btn-primary" onclick="grantAccess()">Liberar Acesso</button>
+      </div>
+
+      <!-- Aba de Denúncias -->
+      <div id="reportsTab" class="owner-tab">
+        <h2>Denúncias</h2>
+        <div id="reportsList" class="reports-list"></div>
+      </div>
+
+      <!-- Aba de Configurações -->
+      <div id="configTab" class="owner-tab">
+        <h2>Configurações Globais</h2>
+        <p>Em desenvolvimento...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE PAGAMENTO -->
+  <div id="paymentModal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closePaymentModal()">✕</button>
+      <h2>Pagar R$ 7,00</h2>
+      <p>Fale com <strong>arthur.cc3</strong> para prosseguir com o pagamento do app.</p>
+      <a href="https://wa.me/5511999999999" class="btn btn-primary" target="_blank">Entrar em Contato</a>
+    </div>
+  </div>
+
+  <!-- MODAL DE FEEDBACK -->
+  <div id="feedbackModal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeFeedbackModal()">✕</button>
+      <h2>Feedback</h2>
+      <textarea id="feedbackText" placeholder="Descreva seu feedback ou erro" class="input-field"></textarea>
+      <button class="btn btn-primary" onclick="submitFeedback()">Enviar Feedback</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
