@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avaliações🔥👀</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="ratingsApp" class="screen">
+    <div class="container-center ratings-container">
+      <h1 class="logo">Avaliações🔥👀</h1>
+      <p class="subtitle">Veja as avaliações dos usuários</p>
+
+      <div id="ratingsList" class="ratings-list"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+
+    async function loadRatings() {
+      try {
+        const response = await fetch(`${API_URL}/ratings/all`);
+        const ratings = await response.json();
+        displayRatings(ratings);
+      } catch (err) {
+        console.error('Erro ao carregar avaliações:', err);
+      }
+    }
+
+    function displayRatings(ratings) {
+      const ratingsList = document.getElementById('ratingsList');
+      ratingsList.innerHTML = '';
+
+      ratings.forEach(rating => {
+        const stars = '⭐'.repeat(rating.stars);
+        const ratingEl = document.createElement('div');
+        ratingEl.className = 'rating-item';
+        ratingEl.innerHTML = `
+          <div class="rating-header">
+            <h3>@${rating.username}</h3>
+            <div class="rating-stars">${stars}</div>
+          </div>
+          <p class="rating-comment">${rating.comment || 'Sem comentário'}</p>
+          <div class="rating-footer">
+            <span class="rating-date">${new Date(rating.created_at).toLocaleDateString('pt-BR')}</span>
+            <button class="btn-small" onclick="loadComments(${rating.id})">Comentários</button>
+          </div>
+        `;
+        ratingsList.appendChild(ratingEl);
+      });
+    }
+
+    async function loadComments(ratingId) {
+      alert('Seção de comentários em desenvolvimento');
+    }
+
+    window.addEventListener('load', loadRatings);
+  </script>
+</body>
+</html>
